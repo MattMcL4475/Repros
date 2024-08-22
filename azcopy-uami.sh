@@ -88,33 +88,34 @@ $SSH_COMMAND "sudo apt-get install -y azcopy"
 # Use AzCopy with the managed identity to upload the file
 try_strategy1() {
   echo_blue "Strategy #1:"
-  $SSH_COMMAND "azcopy login --identity" && \
-  $SSH_COMMAND "azcopy make \"https://$STORAGE_ACCOUNT_NAME.blob.core.windows.net/$BLOB_CONTAINER_NAME\"" && \
-  $SSH_COMMAND "azcopy copy \"$TEST_FILE_NAME\" \"https://$STORAGE_ACCOUNT_NAME.blob.core.windows.net/$BLOB_CONTAINER_NAME/$TEST_FILE_NAME\""
+  $SSH_COMMAND "export AZCOPY_AUTO_LOGIN_TYPE=\"MSI\" && \
+                azcopy login --identity && \
+                azcopy make \"https://$STORAGE_ACCOUNT_NAME.blob.core.windows.net/$BLOB_CONTAINER_NAME\" && \
+                azcopy copy \"$TEST_FILE_NAME\" \"https://$STORAGE_ACCOUNT_NAME.blob.core.windows.net/$BLOB_CONTAINER_NAME/$TEST_FILE_NAME\""
 }
 
 try_strategy2() {
   echo_blue "Strategy #2:"
-  $SSH_COMMAND 'export AZCOPY_AUTO_LOGIN_TYPE="MSI"' && \
-  $SSH_COMMAND "azcopy login --identity --identity-client-id \"$MANAGED_IDENTITY_CLIENT_ID\"" && \
-  $SSH_COMMAND "azcopy make \"https://$STORAGE_ACCOUNT_NAME.blob.core.windows.net/$BLOB_CONTAINER_NAME\"" && \
-  $SSH_COMMAND "azcopy copy \"$TEST_FILE_NAME\" \"https://$STORAGE_ACCOUNT_NAME.blob.core.windows.net/$BLOB_CONTAINER_NAME/$TEST_FILE_NAME\""
+  $SSH_COMMAND "export AZCOPY_AUTO_LOGIN_TYPE=\"MSI\" && \
+                azcopy login --identity --identity-client-id \"$MANAGED_IDENTITY_CLIENT_ID\" && \
+                azcopy make \"https://$STORAGE_ACCOUNT_NAME.blob.core.windows.net/$BLOB_CONTAINER_NAME\" && \
+                azcopy copy \"$TEST_FILE_NAME\" \"https://$STORAGE_ACCOUNT_NAME.blob.core.windows.net/$BLOB_CONTAINER_NAME/$TEST_FILE_NAME\""
 }
 
 try_strategy3() {
   echo_blue "Strategy #3:"
-  $SSH_COMMAND 'export AZCOPY_AUTO_LOGIN_TYPE="MSI"' && \
-  $SSH_COMMAND "azcopy login --login-type=MSI --identity-client-id \"$MANAGED_IDENTITY_CLIENT_ID\"" && \
-  $SSH_COMMAND "azcopy make \"https://$STORAGE_ACCOUNT_NAME.blob.core.windows.net/$BLOB_CONTAINER_NAME\"" && \
-  $SSH_COMMAND "azcopy copy \"$TEST_FILE_NAME\" \"https://$STORAGE_ACCOUNT_NAME.blob.core.windows.net/$BLOB_CONTAINER_NAME/$TEST_FILE_NAME\""
+  $SSH_COMMAND "export AZCOPY_AUTO_LOGIN_TYPE=\"MSI\" && \
+                azcopy login --login-type=MSI --identity-client-id \"$MANAGED_IDENTITY_CLIENT_ID\" && \
+                azcopy make \"https://$STORAGE_ACCOUNT_NAME.blob.core.windows.net/$BLOB_CONTAINER_NAME\" && \
+                azcopy copy \"$TEST_FILE_NAME\" \"https://$STORAGE_ACCOUNT_NAME.blob.core.windows.net/$BLOB_CONTAINER_NAME/$TEST_FILE_NAME\""
 }
 
 try_strategy4() {
   echo_blue "Strategy #4:"
-  $SSH_COMMAND 'export AZCOPY_AUTO_LOGIN_TYPE="AZCLI"' && \
-  $SSH_COMMAND "az login --identity --username \"$MANAGED_IDENTITY_CLIENT_ID\" --allow-no-subscriptions" && \
-  $SSH_COMMAND "azcopy make \"https://$STORAGE_ACCOUNT_NAME.blob.core.windows.net/$BLOB_CONTAINER_NAME\"" && \
-  $SSH_COMMAND "azcopy copy \"$TEST_FILE_NAME\" \"https://$STORAGE_ACCOUNT_NAME.blob.core.windows.net/$BLOB_CONTAINER_NAME/$TEST_FILE_NAME\""
+  $SSH_COMMAND "export AZCOPY_AUTO_LOGIN_TYPE=\"AZCLI\" && \
+                az login --identity --username \"$MANAGED_IDENTITY_CLIENT_ID\" --allow-no-subscriptions && \
+                azcopy make \"https://$STORAGE_ACCOUNT_NAME.blob.core.windows.net/$BLOB_CONTAINER_NAME\" && \
+                azcopy copy \"$TEST_FILE_NAME\" \"https://$STORAGE_ACCOUNT_NAME.blob.core.windows.net/$BLOB_CONTAINER_NAME/$TEST_FILE_NAME\""
 }
 
 # Temporarily disable the global ERR trap
