@@ -24,7 +24,7 @@ Step 2: Create a user-assigned managed identity
   "resourceGroup": "mattmcl_AzureResourceGroup_683",
   "systemData": null,
   "tags": {},
-  "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+  "tenantId": "REMOVED",
   "type": "Microsoft.ManagedIdentity/userAssignedIdentities"
 }
 Step 3: Create a storage account with shared key access disabled
